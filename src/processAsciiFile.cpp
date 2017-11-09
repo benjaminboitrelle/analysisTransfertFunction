@@ -70,6 +70,7 @@ int ProcessAsciiFile::getNumberOfThresholds(){
 }
 
 std::vector<double> ProcessAsciiFile::getPixelResponse(std::vector<std::vector<double>> inputImageVectorised, int pixelPosition){
+  // Return a vector containing the threshold (for pixelPosition = 0) or a pixel response (pixelPosition !=0)
   m_pixelResponse.clear();
   for (auto row = inputImageVectorised.begin(); row != inputImageVectorised.end(); row++){
     m_pixelResponse.push_back(row->at(pixelPosition));
