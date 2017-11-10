@@ -27,9 +27,11 @@ public:
   void splitString(const std::string& inputString, char delimiterChar, std::vector<std::string> &outputVector);
   void readAsciiFile(std::fstream& myFile, std::vector<std::vector<double>> &outputImageVectorised);
   int getNumberOfThresholds();
+  int getNumberOfPixels();
   static std::vector<double> getPixelResponse(std::vector<std::vector<double>> inputVector, int pixelPosition);
   
 private:
   int m_threshold;
+  int m_numberOfPixels;
 };
 #endif /* processAsciiFile_hpp */

@@ -63,6 +63,7 @@ void ProcessAsciiFile::readAsciiFile(std::fstream& myfile, std::vector<std::vect
     outputImageVectorised.push_back(resultDouble);
     m_threshold++;
   }
+  m_numberOfPixels = outputImageVectorised.at(0).size() - 1;
 }
 
 int ProcessAsciiFile::getNumberOfThresholds(){
@@ -77,4 +78,8 @@ std::vector<double> ProcessAsciiFile::getPixelResponse(std::vector<std::vector<d
     pixelResponse.push_back(row->at(pixelPosition));
   }
   return pixelResponse;
+}
+
+int ProcessAsciiFile::getNumberOfPixels(){
+  return m_numberOfPixels;
 }
