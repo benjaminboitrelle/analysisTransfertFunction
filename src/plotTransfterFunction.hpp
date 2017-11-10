@@ -21,9 +21,15 @@ public:
   ~PlotTransfertFunction();
   
   TF1* setFitErfc(int threshold_min, int threshold_max);
-  TGraph* transfertFunctionFitted(int numberOfEntries, double &variable1, double &variable2, TF1* fitToUse, int markerColor );
+  TGraph* prepareTransfertFunctionFitted(int numberOfEntries, double &variable1, double &variable2, TF1* fitToUse, int markerColor );
   void plotHistogram(std::string title, std::string histoTitle, int bin, int rangeMin, int rangeMax, std::vector<double> parameterToPlot );
+  void plotTransfertFunction(int pixelRange, std::vector<std::vector<double>> inputVectorToAnalyse);
+  std::vector<double> getTemporalNoise();
+  std::vector<double> getOffset();
   
+private:
+  std::vector<double> m_temporalNoise;
+  std::vector<double> m_offset;
   
 };
 

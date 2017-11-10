@@ -16,53 +16,37 @@
 #include <map>
 #include <utility>
 
-#include "TGraph.h"
-#include "TMultiGraph.h"
 #include "TFile.h"
-#include "TF1.h"
-#include "TH1F.h"
-#include "TCanvas.h"
 
 #include "processAsciiFile.hpp"
 #include "plotTransfterFunction.hpp"
 
-
 int main() {
+  
+  // These constant parameters have to be updated from a config file to avoid recompilation
   const std::string INPUT_FILE = "/Users/ben/PostDoc/sCurve/input/scans_testlab1.txt";
+  const std::string OUTPUT_FILE = "sCurve.root";
+  const int ANALYSIS_RANGE = 1000;
   const int THRESHOLD_POSITION = 0;
-  const int THRESHOLD_MIN = 0;
-  const int PIXEL_RESPONSE_BEGIN = 1;
-  const double NUMBER_OF_ENTRIES = 1000. ;
   
   std::fstream myfile(INPUT_FILE);
   std::vector<std::vector<double>> outputImageVectorised;
   
   ProcessAsciiFile asciiFileToRead;
   asciiFileToRead.readAsciiFile(myfile, outputImageVectorised);
-  int  numberOfThresholds = asciiFileToRead.getNumberOfThresholds();
   std::vector<double> threshold = asciiFileToRead.getPixelResponse(outputImageVectorised, THRESHOLD_POSITION);
   
-  std::unique_ptr<TCanvas> canvas (new TCanvas("canvas", "canvas", 1200, 1100));
-  auto outputRootFile = TFile::Open("sCurve.root", "RECREATE");
-  std::unique_ptr<TMultiGraph> multiGraph{new TMultiGraph()};
+  auto outputRootFile = TFile::Open(OUTPUT_FILE.c_str(), "RECREATE");
   std::vector<double> temporalNoise, offset;
   
   PlotTransfertFunction transfertFunction;
+  transfertFunction.plotTransfertFunction(ANALYSIS_RANGE, outputImageVectorised);
   
-  for (auto numberOfPixels = PIXEL_RESPONSE_BEGIN; numberOfPixels < 10; numberOfPixels++){
-    std::vector<double> response = asciiFileToRead.getPixelResponse(outputImageVectorised, numberOfPixels);
-    std::transform(response.begin(), response.end(), response.begin(), std::bind2nd(std::divides<double>(), NUMBER_OF_ENTRIES));
-    TF1* fit = transfertFunction.setFitErfc(THRESHOLD_MIN, numberOfThresholds);
-    multiGraph->Add(transfertFunction.transfertFunctionFitted(numberOfThresholds, threshold[0], response[0], fit, numberOfPixels));
-    temporalNoise.push_back(-1. * (fit->GetParameter(0) / fit->GetParameter(1)));
-    offset.push_back(1. / (fit->GetParameter(1) * sqrt(2)));
-  }
-  multiGraph->SetTitle("Transfert function fitted");
-  multiGraph->Write();
-
+  temporalNoise = transfertFunction.getTemporalNoise();
+  offset = transfertFunction.getOffset();
+  
   transfertFunction.plotHistogram("Noise distribution [uADC]", "Temporal Noise", 600, 0, 60, temporalNoise);
   transfertFunction.plotHistogram("Threshold distribution [mV]", "Fixed pattern noise", 500, -5, 5, offset);
-
   
   outputRootFile->Close();
   

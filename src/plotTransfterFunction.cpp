@@ -6,6 +6,8 @@
 //
 
 #include "plotTransfterFunction.hpp"
+#include "processAsciiFile.hpp"
+
 #include <string>
 #include <vector>
 
@@ -13,6 +15,7 @@
 #include "TF1.h"
 #include "TH1F.h"
 #include "TGraph.h"
+#include "TMultiGraph.h"
 #include "TCanvas.h"
 
 PlotTransfertFunction::PlotTransfertFunction(){
@@ -32,7 +35,7 @@ TF1* PlotTransfertFunction::setFitErfc(int threshold_min, int threshold_max){
   return fitErfc.release();
 }
 
-TGraph* PlotTransfertFunction::transfertFunctionFitted(int numberOfEntries, double &variable1, double &variable2, TF1 *fitToUse, int markerColor){
+TGraph* PlotTransfertFunction::prepareTransfertFunctionFitted(int numberOfEntries, double &variable1, double &variable2, TF1 *fitToUse, int markerColor){
   // Create and return a TGraph from variable1 and variable2 and fit it according to fitToUse
   
   std::unique_ptr<TGraph> graph{new TGraph(numberOfEntries, &variable1, &variable2)};
@@ -52,4 +55,33 @@ void PlotTransfertFunction::plotHistogram(std::string title, std::string histoTi
     histoToPlot->Fill(iterator);
   }
   histoToPlot->Write();
+}
+
+void PlotTransfertFunction::plotTransfertFunction(int pixelRange, std::vector<std::vector<double> > inputVectorToAnalyse){
+  
+  std::unique_ptr<TMultiGraph> multiGraph{new TMultiGraph()};
+  std::vector<double> threshold =  ProcessAsciiFile::getPixelResponse(inputVectorToAnalyse, 0);
+  int numberOfEvents = 1000;
+  ProcessAsciiFile readAsciiFile;
+  int thresholdMax = readAsciiFile.getNumberOfThresholds();
+  
+  for (auto numberOfPixels = 1; numberOfPixels < pixelRange; numberOfPixels++){
+    std::vector<double> response = ProcessAsciiFile::getPixelResponse(inputVectorToAnalyse, numberOfPixels);
+    std::transform(response.begin(), response.end(), response.begin(), std::bind2nd(std::divides<double>(), numberOfEvents));
+    TF1* fit = PlotTransfertFunction::setFitErfc(0, thresholdMax);
+    multiGraph->Add(PlotTransfertFunction::prepareTransfertFunctionFitted(threshold.size(), threshold[0], response[0], fit, numberOfPixels));
+    m_temporalNoise.push_back(-1. * (fit->GetParameter(0) / fit->GetParameter(1)));
+    m_offset.push_back(1. / (fit->GetParameter(1) * sqrt(2)));
+  }
+  
+  multiGraph->SetTitle("Transfert function fitted");
+  multiGraph->Write();
+}
+
+std::vector<double> PlotTransfertFunction::getTemporalNoise(){
+  return m_temporalNoise;
+}
+
+std::vector<double> PlotTransfertFunction::getOffset(){
+  return m_offset;
 }
