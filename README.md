@@ -12,23 +12,26 @@ It returns a ROOT file.
 ## Compliation
 
 To compile the project:
-
+```
   mkdir build && cd build;
   cmake ..
   make
-
+```
 And then to run the project:
+```
   ./analysisTransfertFunction
-
+```
 ## Input
 
 The input file is a ".txt" file which has the following structure:
 
- | threshold 0 | response pixel 0 | response pixel 1 | ... | response pixel n |
- | threshold 1 | response pixel 0 | response pixel 1 | ... | response pixel n |
+ | Threshold | pixel 0 | pixel 1 | ... | pixel n |
+ |-----------|---------|---------|-----|---------|
+ | 0 | response 0 | response 1 | ... | response n |
+ | 1 | response 0 | response 1 | ... | response n |
  | ... | ... | ... | ... | ... |
- | threshold n | response pixel 0 | response pixel 1 | ... | response pixel n |
-
+ | m | response 0 | response 1 | ... | response n |
+ 
 ## Information
 
 This project was written, compile and tested with macOS Sierra (version 10.12.6).
