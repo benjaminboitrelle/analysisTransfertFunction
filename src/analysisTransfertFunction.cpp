@@ -51,10 +51,10 @@ int main() {
 
   auto offsetMax = std::max_element(std::begin(offset), std::end(offset));
   auto offsetMin = std::min_element(std::begin(offset), std::end(offset));
-  auto offsetBin = std::ceil((*offsetMax + 1) - (*offsetMin - 1)) * 100;
+  auto offsetBin = std::ceil((*offsetMax + 1) - (*offsetMin - 1)) * 5;
   
   transfertFunction.plotHistogram("Noise distribution [uADC]", "Temporal Noise", temporalNoiseBin, std::ceil(*temporalNoiseMin) - 1 , std::ceil(*temporalNoiseMax) + 1, temporalNoise);
-  transfertFunction.plotHistogram("Threshold distribution [mV]", "Fixed pattern noise", offsetBin, std::ceil(*offsetMin) - 1 , std::ceil(*offsetMax) + 1, offset);
+  transfertFunction.plotHistogram("Threshold distribution [uADC]", "Fixed pattern noise", offsetBin, std::ceil(*offsetMin) - 1 , std::ceil(*offsetMax) + 1, offset);
   
   outputRootFile->Close();
   

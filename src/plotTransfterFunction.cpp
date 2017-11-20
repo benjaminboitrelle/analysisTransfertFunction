@@ -70,8 +70,8 @@ void PlotTransfertFunction::plotTransfertFunction(int pixelRange, std::vector<st
     std::transform(response.begin(), response.end(), response.begin(), std::bind2nd(std::divides<double>(), numberOfEvents));
     TF1* fit = PlotTransfertFunction::setFitErfc(0, thresholdMax);
     multiGraph->Add(PlotTransfertFunction::prepareTransfertFunctionFitted(threshold.size(), threshold[0], response[0], fit, numberOfPixels));
-    m_temporalNoise.push_back(-1. * (fit->GetParameter(0) / fit->GetParameter(1)));
-    m_offset.push_back(1. / (fit->GetParameter(1) * sqrt(2)));
+    m_temporalNoise.push_back(1. / (fit->GetParameter(1) * sqrt(2)));
+    m_offset.push_back(-1. * (fit->GetParameter(0) / fit->GetParameter(1)));
   }
   
   multiGraph->SetTitle("Transfert function fitted");

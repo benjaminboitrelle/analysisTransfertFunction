@@ -4,12 +4,12 @@ This software is used to read an ASCII file containing pixel's response with res
 It is based on C++ and is using ROOT classes.
 
 It creates multiple plots:
-* Transfert function fitted with a complementary error function
+* S-Curve fitted with a complementary error function
 * A histogram of the mean calculated with the fit result of the S-Curve
 * A histogram of the sigma calculated with the fit result of the S-Curve
 It returns a ROOT file.
 
-## Compliation
+## Compilation
 
 To compile the project:
 ```
