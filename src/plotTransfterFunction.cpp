@@ -50,10 +50,14 @@ TGraph* PlotTransfertFunction::prepareTransfertFunctionFitted(int numberOfEntrie
 void PlotTransfertFunction::plotHistogram(std::string title, std::string histoTitle, int bin, int rangeMin, int rangeMax, std::vector<double> parameterToPlot){
   // Plot an hitogramm from a vector of data set
   
+  std::unique_ptr<TCanvas> canvas (new TCanvas("canvas", "canvas", 1200, 1100));
+  gStyle->SetOptStat(1111);
+  gStyle->SetOptFit(1011);
   auto histoToPlot = new TH1F(title.c_str(), histoTitle.c_str(), bin, rangeMin, rangeMax);
   for(auto iterator : parameterToPlot){
     histoToPlot->Fill(iterator);
   }
+  histoToPlot->Fit("gaus");
   histoToPlot->Write();
 }
 
@@ -61,7 +65,7 @@ void PlotTransfertFunction::plotTransfertFunction(int pixelRange, std::vector<st
   
   std::unique_ptr<TMultiGraph> multiGraph{new TMultiGraph()};
   std::vector<double> threshold =  ProcessAsciiFile::getPixelResponse(inputVectorToAnalyse, 0);
-  int numberOfEvents = 1000;
+  int numberOfEvents = 1; // Value max of normalisation
   ProcessAsciiFile readAsciiFile;
   int thresholdMax = readAsciiFile.getNumberOfThresholds();
   

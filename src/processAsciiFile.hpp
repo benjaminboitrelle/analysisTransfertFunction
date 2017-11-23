@@ -31,7 +31,7 @@ public:
   static std::vector<double> getPixelResponse(std::vector<std::vector<double>> inputVector, int pixelPosition);
   
 private:
-  int m_threshold;
-  int m_numberOfPixels;
+  double m_threshold;
+  double m_numberOfPixels;
 };
 #endif /* processAsciiFile_hpp */

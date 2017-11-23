@@ -57,7 +57,7 @@ void ProcessAsciiFile::readAsciiFile(std::fstream& myfile, std::vector<std::vect
   std::string outputLine;
   while (std::getline(myfile, outputLine)){
     std::vector<std::string> result;
-    splitString(outputLine, ' ', result);
+    splitString(outputLine, ';', result);
     std::vector<double> resultDouble(result.size());
     convertStringToDouble(result, resultDouble);
     outputImageVectorised.push_back(resultDouble);
