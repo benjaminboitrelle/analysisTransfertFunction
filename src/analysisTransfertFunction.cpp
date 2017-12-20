@@ -22,29 +22,87 @@
 #include "processAsciiFile.hpp"
 #include "plotTransfterFunction.hpp"
 
+#include "xmlReader/tinyxml2.h"
+
+using namespace tinyxml2;
+
 int main() {
+
+  XMLDocument configFileXML;
+  XMLError errorResult = configFileXML.LoadFile("config.xml");
+  if (errorResult != XML_SUCCESS){
+    std::cerr << "ERROR! Could not find XML file." << std::endl;
+    return 1;
+  }
+
+  const std::string INPUT_FILE = configFileXML.FirstChildElement("FILE")->FirstChildElement("INPUT")->GetText();
+  if (INPUT_FILE == nullptr){
+      std::cerr << "Input file field empty..." << std::endl;
+      return 1;
+  }
+
+  const std::string DELIMITER = configFileXML.FirstChildElement("FILE")->FirstChildElement("DELIMITER")->GetText();
+  if (DELIMITER == nullptr){
+      std::cerr << "Input file field empty..." << std::endl;
+      return 1;
+  }
+  std::string delimiterChar;
+  if (DELIMITER == "tab"){
+    delimiterChar = "\t";
+  }
+  else if (DELIMITER == "whitespace"){
+    delimiterChar = " ";  
+  }
+  else delimiterChar = DELIMITER;
+
+  const std::string OUTPUT_FILE = configFileXML.FirstChildElement("FILE")->FirstChildElement("OUTPUT")->GetText();
+  if (OUTPUT_FILE == nullptr){
+      std::cerr << "OUTPUT file field empty..." << std::endl;
+      return 1;
+  }
   
-  // These constant parameters have to be updated from a config file to avoid recompilation
-  const std::string INPUT_FILE = "/Users/ben/PostDoc/analysisTransfertFunction/input/discrims_32_8_63_63_res.txt";
-  const std::string OUTPUT_FILE = "sCurve_discrims_32_8_63_63_res.root";
+  const std::string NUMBER_EVENTS = configFileXML.FirstChildElement("ANALYSIS")->FirstChildElement("NUMBER_EVENTS")->GetText();
+  if (NUMBER_EVENTS == nullptr){
+    std::cerr << "NUMBER_EVENTS field is empty..." << std::endl;
+    return 1;
+  }
+
+  const std::string FIT_START = configFileXML.FirstChildElement("ANALYSIS")->FirstChildElement("FIT_START")->GetText();
+  if (FIT_START == nullptr){
+    std::cerr << "FIT_START field is empty..." << std::endl;
+    return 1;
+  }
+
+  const std::string FIT_END = configFileXML.FirstChildElement("ANALYSIS")->FirstChildElement("FIT_END")->GetText();
+  if (FIT_END == nullptr){
+    std::cerr << "FIT_END field is empty..." << std::endl;
+    return 1;
+  }
+
+  const std::string RANGE = configFileXML.FirstChildElement("ANALYSIS")->FirstChildElement("RANGE")->GetText();
+  if (RANGE == nullptr){
+    std::cerr << "RANGE field is empty..." << std::endl;
+    return 1;
+  }
   const int THRESHOLD_POSITION = 0;
   
   std::fstream myfile(INPUT_FILE);
   std::vector<std::vector<double>> outputImageVectorised;
   
   ProcessAsciiFile asciiFileToRead;
-  asciiFileToRead.readAsciiFile(myfile, outputImageVectorised);
-  std::vector<double> threshold = asciiFileToRead.getPixelResponse(outputImageVectorised, THRESHOLD_POSITION);
-  const int ANALYSIS_RANGE = asciiFileToRead.getNumberOfPixels();
-  //const int ANALYSIS_RANGE = 1000;
+  asciiFileToRead.SetDelimiterChar(delimiterChar);
+  asciiFileToRead.ReadAsciiFile(myfile, outputImageVectorised);
+  std::vector<double> threshold = asciiFileToRead.GetPixelResponse(outputImageVectorised, THRESHOLD_POSITION);
   auto outputRootFile = TFile::Open(OUTPUT_FILE.c_str(), "RECREATE");
   std::vector<double> temporalNoise, offset;
   
   PlotTransfertFunction transfertFunction;
-  transfertFunction.plotTransfertFunction(ANALYSIS_RANGE, outputImageVectorised);
+  transfertFunction.SetNumberOfEvents(stoi(NUMBER_EVENTS));
+  (FIT_START == "none" || FIT_END == "none")? transfertFunction.SetFitRange(threshold.front(), threshold.back()) : transfertFunction.SetFitRange(stoi(FIT_START), stoi(FIT_END));
+  (RANGE == "none")? transfertFunction.PlotTransfert(asciiFileToRead.GetNumberOfPixels(), outputImageVectorised) : transfertFunction.PlotTransfert(stoi(RANGE), outputImageVectorised);
   
-  temporalNoise = transfertFunction.getTemporalNoise();
-  offset = transfertFunction.getOffset();
+  temporalNoise = transfertFunction.GetTemporalNoise();
+  offset = transfertFunction.GetOffset();
   
   auto temporalNoiseMax = std::max_element(std::begin(temporalNoise), std::end(temporalNoise));
   auto temporalNoiseMin = std::min_element(std::begin(temporalNoise), std::end(temporalNoise));
@@ -54,13 +112,10 @@ int main() {
   auto offsetMin = std::min_element(std::begin(offset), std::end(offset));
   auto offsetBin = std::ceil((*offsetMax + 1) - (*offsetMin - 1)) * 50;
   
-  transfertFunction.plotHistogram("Noise distribution [uADC]", "Temporal Noise", temporalNoiseBin, std::ceil(*temporalNoiseMin) - 1 , std::ceil(*temporalNoiseMax) + 1, temporalNoise);
-  transfertFunction.plotHistogram("Threshold distribution [uADC]", "Fixed pattern noise", offsetBin, std::ceil(*offsetMin) - 1 , std::ceil(*offsetMax) + 1, offset);
+  transfertFunction.PlotHistogram("Noise distribution [uADC]", "Temporal Noise", temporalNoiseBin, std::ceil(*temporalNoiseMin) - 1 , std::ceil(*temporalNoiseMax) + 1, temporalNoise);
+  transfertFunction.PlotHistogram("Threshold distribution [uADC]", "Fixed pattern noise", offsetBin, std::ceil(*offsetMin) - 1 , std::ceil(*offsetMax) + 1, offset);
   
   outputRootFile->Close();
-  
-  std::cout << "Hello World!" << std::endl;
-
   
   return 0;
 }

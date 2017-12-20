@@ -23,15 +23,17 @@ class ProcessAsciiFile{
 public:
   ProcessAsciiFile();
   ~ProcessAsciiFile();
-  std::vector<double> convertStringToDouble(std::vector<std::string>& inputString, std::vector<double>& output);
-  void splitString(const std::string& inputString, char delimiterChar, std::vector<std::string> &outputVector);
-  void readAsciiFile(std::fstream& myFile, std::vector<std::vector<double>> &outputImageVectorised);
-  int getNumberOfThresholds();
-  int getNumberOfPixels();
-  static std::vector<double> getPixelResponse(std::vector<std::vector<double>> inputVector, int pixelPosition);
+  std::vector<double> ConvertStringToDouble(std::vector<std::string>& inputString, std::vector<double>& output);
+  void SplitString(const std::string& inputString, std::string delimiterChar, std::vector<std::string> &outputVector);
+  void ReadAsciiFile(std::fstream& myFile, std::vector<std::vector<double>> &outputImageVectorised);
+  int GetNumberOfThresholds();
+  int GetNumberOfPixels();
+  static std::vector<double> GetPixelResponse(std::vector<std::vector<double>> inputVector, int pixelPosition);
+  void SetDelimiterChar(std::string delimiterChar);
   
 private:
   double m_threshold;
   double m_numberOfPixels;
+  std::string m_delimiterChar;
 };
 #endif /* processAsciiFile_hpp */

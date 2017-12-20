@@ -20,16 +20,21 @@ public:
   PlotTransfertFunction();
   ~PlotTransfertFunction();
   
-  TF1* setFitErfc(int threshold_min, int threshold_max);
-  TGraph* prepareTransfertFunctionFitted(int numberOfEntries, double &variable1, double &variable2, TF1* fitToUse, int markerColor );
-  void plotHistogram(std::string title, std::string histoTitle, int bin, int rangeMin, int rangeMax, std::vector<double> parameterToPlot );
-  void plotTransfertFunction(int pixelRange, std::vector<std::vector<double>> inputVectorToAnalyse);
-  std::vector<double> getTemporalNoise();
-  std::vector<double> getOffset();
+  TGraph* PrepareTransfertFunctionFitted(int numberOfEntries, double &variable1, double &variable2, TF1* fitToUse, int markerColor );
+  void PlotHistogram(std::string title, std::string histoTitle, int bin, int rangeMin, int rangeMax, std::vector<double> parameterToPlot );
+  void PlotTransfert(int pixelRange, std::vector<std::vector<double>> inputVectorToAnalyse);
+  std::vector<double> GetTemporalNoise();
+  std::vector<double> GetOffset();
+  void SetNumberOfEvents(int numberOfEvents);
+  TF1* SetFitErfc(double threshold_min, double threshold_max);
+  void SetFitRange(double fitStart, double fitEnd);
   
 private:
   std::vector<double> m_temporalNoise;
   std::vector<double> m_offset;
+  int m_numberOfEvents;
+  double m_fitStart;
+  double m_fitEnd;
   
 };
 

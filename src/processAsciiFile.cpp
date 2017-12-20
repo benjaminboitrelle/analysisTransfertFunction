@@ -20,13 +20,15 @@
 ProcessAsciiFile::ProcessAsciiFile(){
   // Constructor
    m_threshold = 0;
+   m_numberOfPixels = 1000;
+   m_delimiterChar = ";";
 }
 
 ProcessAsciiFile::~ProcessAsciiFile(){
   // Destructor
 }
 
-std::vector<double> ProcessAsciiFile::convertStringToDouble(std::vector<std::string>& inputString, std::vector<double>& output){
+std::vector<double> ProcessAsciiFile::ConvertStringToDouble(std::vector<std::string>& inputString, std::vector<double>& output){
   // Convert a vector of string into a vector of double
   
   output.resize(inputString.size());
@@ -37,7 +39,7 @@ std::vector<double> ProcessAsciiFile::convertStringToDouble(std::vector<std::str
   return output;
 }
 
-void ProcessAsciiFile::splitString(const std::string& inputString, char delimiterChar, std::vector<std::string>& outputVector){
+void ProcessAsciiFile::SplitString(const std::string& inputString, std::string delimiterChar, std::vector<std::string>& outputVector){
   // Split a string according to a define delimiter and save it into a vector
   
   std::string::size_type i = 0;
@@ -51,26 +53,26 @@ void ProcessAsciiFile::splitString(const std::string& inputString, char delimite
   }
 }
 
-void ProcessAsciiFile::readAsciiFile(std::fstream& myfile, std::vector<std::vector<double>> &outputImageVectorised){
+void ProcessAsciiFile::ReadAsciiFile(std::fstream& myfile, std::vector<std::vector<double>> &outputImageVectorised){
   // Open an Ascii file and store its element in a 2D vector of double
   
   std::string outputLine;
   while (std::getline(myfile, outputLine)){
     std::vector<std::string> result;
-    splitString(outputLine, ';', result);
+    SplitString(outputLine, m_delimiterChar, result);
     std::vector<double> resultDouble(result.size());
-    convertStringToDouble(result, resultDouble);
+    ConvertStringToDouble(result, resultDouble);
     outputImageVectorised.push_back(resultDouble);
     m_threshold++;
   }
   m_numberOfPixels = outputImageVectorised.at(0).size() - 1;
 }
 
-int ProcessAsciiFile::getNumberOfThresholds(){
+int ProcessAsciiFile::GetNumberOfThresholds(){
   return m_threshold;
 }
 
-std::vector<double> ProcessAsciiFile::getPixelResponse(std::vector<std::vector<double>> inputImageVectorised, int pixelPosition){
+std::vector<double> ProcessAsciiFile::GetPixelResponse(std::vector<std::vector<double>> inputImageVectorised, int pixelPosition){
   // Return a vector containing the threshold (for pixelPosition = 0) or a pixel response (pixelPosition !=0)
   
   std::vector<double> pixelResponse;
@@ -80,6 +82,11 @@ std::vector<double> ProcessAsciiFile::getPixelResponse(std::vector<std::vector<d
   return pixelResponse;
 }
 
-int ProcessAsciiFile::getNumberOfPixels(){
+int ProcessAsciiFile::GetNumberOfPixels(){
   return m_numberOfPixels;
+}
+
+void ProcessAsciiFile::SetDelimiterChar(std::string delimiterChar){
+
+  m_delimiterChar = delimiterChar;
 }
