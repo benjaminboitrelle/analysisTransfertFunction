@@ -1,6 +1,6 @@
 //
 //  plotTransfterFunction.hpp
-//  analysisTransfertFunction
+//  analysisTransferFunction
 //
 //  Created by Benjamin BOITRELLE on 09/11/2017.
 //
@@ -15,14 +15,14 @@
 #include "TF1.h"
 #include "TGraph.h"
 
-class PlotTransfertFunction{
+class PlotTransferFunction{
 public:
-  PlotTransfertFunction();
-  ~PlotTransfertFunction();
+  PlotTransferFunction();
+  ~PlotTransferFunction();
   
-  TGraph* PrepareTransfertFunctionFitted(int numberOfEntries, double &variable1, double &variable2, TF1* fitToUse, int markerColor );
+  TGraph* PrepareTransferFunctionFitted(int numberOfEntries, double &variable1, double &variable2, TF1* fitToUse, int markerColor );
   void PlotHistogram(std::string title, std::string histoTitle, int bin, int rangeMin, int rangeMax, std::vector<double> parameterToPlot );
-  void PlotTransfert(int pixelRange, std::vector<std::vector<double>> inputVectorToAnalyse);
+  void PlotTransfer(int pixelRange, std::vector<std::vector<double>> inputVectorToAnalyse);
   std::vector<double> GetTemporalNoise();
   std::vector<double> GetOffset();
   void SetNumberOfEvents(int numberOfEvents);

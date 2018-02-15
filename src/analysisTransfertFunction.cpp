@@ -1,5 +1,5 @@
 //
-//  analysisTransfertFunction
+//  analysisTransferFunction
 //
 //  Created by Benjamin BOITRELLE on 09/11/2017.
 //
@@ -122,15 +122,15 @@ int main (int argc, char **argv){
   auto outputRootFile = TFile::Open(OUTPUT_FILE.c_str(), "RECREATE");
   std::vector<double> temporalNoise, offset;
   
-  PlotTransfertFunction transfertFunction;
-  transfertFunction.SetConversionFactor(stod(CONVERSION_FACTOR));
-  transfertFunction.SetUnits(UNITS);
-  transfertFunction.SetNumberOfEvents(stoi(NUMBER_EVENTS));
-  (FIT_START == "none" || FIT_END == "none")? transfertFunction.SetFitRange(threshold.front(), threshold.back()) : transfertFunction.SetFitRange(stoi(FIT_START), stoi(FIT_END));
-  (RANGE == "none")? transfertFunction.PlotTransfert(asciiFileToRead.GetNumberOfPixels(), outputImageVectorised) : transfertFunction.PlotTransfert(stoi(RANGE), outputImageVectorised);
+  PlotTransferFunction TransferFunction;
+  TransferFunction.SetConversionFactor(stod(CONVERSION_FACTOR));
+  TransferFunction.SetUnits(UNITS);
+  TransferFunction.SetNumberOfEvents(stoi(NUMBER_EVENTS));
+  (FIT_START == "none" || FIT_END == "none")? TransferFunction.SetFitRange(threshold.front(), threshold.back()) : TransferFunction.SetFitRange(stoi(FIT_START), stoi(FIT_END));
+  (RANGE == "none")? TransferFunction.PlotTransfer(asciiFileToRead.GetNumberOfPixels(), outputImageVectorised) : TransferFunction.PlotTransfer(stoi(RANGE), outputImageVectorised);
   
-  temporalNoise = transfertFunction.GetTemporalNoise();
-  offset = transfertFunction.GetOffset();
+  temporalNoise = TransferFunction.GetTemporalNoise();
+  offset = TransferFunction.GetOffset();
   
   auto temporalNoiseMax = std::max_element(std::begin(temporalNoise), std::end(temporalNoise));
   auto temporalNoiseMin = std::min_element(std::begin(temporalNoise), std::end(temporalNoise));
@@ -143,8 +143,8 @@ int main (int argc, char **argv){
   std::string temporalNoiseTitle = "Noise distribution [" + UNITS + "]";
   std::string fixedPatternNoiseTitle = "Threshold distribution [" + UNITS + "]";
   
-  transfertFunction.PlotHistogram(temporalNoiseTitle.c_str(), "Temporal Noise", temporalNoiseBin, std::ceil(*temporalNoiseMin) - 1 , std::ceil(*temporalNoiseMax) + 1, temporalNoise);
-  transfertFunction.PlotHistogram(fixedPatternNoiseTitle.c_str(), "Fixed pattern noise", offsetBin, std::ceil(*offsetMin) - 1 , std::ceil(*offsetMax) + 1, offset);
+  TransferFunction.PlotHistogram(temporalNoiseTitle.c_str(), "Temporal Noise", temporalNoiseBin, std::ceil(*temporalNoiseMin) - 1 , std::ceil(*temporalNoiseMax) + 1, temporalNoise);
+  TransferFunction.PlotHistogram(fixedPatternNoiseTitle.c_str(), "Fixed pattern noise", offsetBin, std::ceil(*offsetMin) - 1 , std::ceil(*offsetMax) + 1, offset);
   
   outputRootFile->Close();
   

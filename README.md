@@ -19,7 +19,7 @@ To compile the project:
 ```
 And then to run the project:
 ```
-  ./analysisTransfertFunction
+  ./analysisTransfertFunction -cfg /path/to/myFile.xml
 ```
 ## Input
 
@@ -40,6 +40,4 @@ The compiler used is clang-900.0.38.
 
 ## TO DO
 
-* Test compilation and running software with Windows and Linux machines
-* Read parameters from a config file instead of hard-coded numbers
 * Add a scatter plot of pixel's response for different thresholds

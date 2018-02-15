@@ -1,6 +1,6 @@
 //
 //  processAsciiFile.hpp
-//  analysisTransfertFunction
+//  analysisTransferFunction
 //
 //  Created by Benjamin BOITRELLE on 09/11/2017.
 //
