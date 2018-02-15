@@ -23,6 +23,7 @@ PlotTransfertFunction::PlotTransfertFunction(){
   m_numberOfEvents = 1;
   m_fitStart = 0.;
   m_fitEnd = 255.;
+  m_conversionFactor = 1.0;
 }
 
 PlotTransfertFunction::~PlotTransfertFunction(){
@@ -60,7 +61,11 @@ void PlotTransfertFunction::PlotHistogram(std::string title, std::string histoTi
   for(auto iterator : parameterToPlot){
     histoToPlot->Fill(iterator);
   }
+  std::string xTitle = "Threhold [" + m_units + "]";
+  std::string yTitle = "Entries";
   histoToPlot->Fit("gaus");
+  histoToPlot->GetXaxis()->SetTitle(xTitle.c_str());
+  histoToPlot->GetYaxis()->SetTitle(yTitle.c_str());
   histoToPlot->Write();
 }
 
@@ -75,13 +80,15 @@ void PlotTransfertFunction::PlotTransfert(int pixelRange, std::vector<std::vecto
     std::vector<double> response = ProcessAsciiFile::GetPixelResponse(inputVectorToAnalyse, numberOfPixels);
     std::transform(response.begin(), response.end(), response.begin(), std::bind2nd(std::divides<double>(), m_numberOfEvents));
     TF1* fit = PlotTransfertFunction::SetFitErfc(m_fitStart, m_fitEnd);
-    //TF1* fit = PlotTransfertFunction::SetFitErfc(0, thresholdMax);
     multiGraph->Add(PlotTransfertFunction::PrepareTransfertFunctionFitted(threshold.size(), threshold[0], response[0], fit, numberOfPixels));
-    m_temporalNoise.push_back(1. / (fit->GetParameter(1) * sqrt(2)));
-    m_offset.push_back(-1. * (fit->GetParameter(0) / fit->GetParameter(1)));
+//    m_temporalNoise.push_back(1. / (fit->GetParameter(1) * sqrt(2))); // CVF * 1. / (fit->GetParameter(1) * sqrt(2))
+//    m_offset.push_back(-1. * (fit->GetParameter(0) / fit->GetParameter(1))); // -1. * CVF * (fit->GetParameter(0) / fit->GetParameter(1))
+    m_temporalNoise.push_back( (m_conversionFactor *  1.) / (fit->GetParameter(1) * sqrt(2)));
+    m_offset.push_back( (-1. * m_conversionFactor) * (fit->GetParameter(0) / fit->GetParameter(1))); 
   }
-  
-  multiGraph->SetTitle("Transfert function fitted");
+  std::string title = "Transfer function fitted; threshold [" + m_units + "]; Entries";
+  multiGraph->SetTitle(title.c_str());
+//  multiGraph->Draw("AP")
   multiGraph->Write();
 }
 
@@ -94,11 +101,18 @@ std::vector<double> PlotTransfertFunction::GetOffset(){
 }
 
 void PlotTransfertFunction::SetNumberOfEvents(int numberOfEvents){
-
   m_numberOfEvents = numberOfEvents;  
 }
 
 void PlotTransfertFunction::SetFitRange(double fitStart, double fitEnd){
   m_fitStart = fitStart;
   m_fitEnd = fitEnd;  
+}
+
+void PlotTransfertFunction::SetConversionFactor(double conversionFactor){
+  m_conversionFactor = conversionFactor;
+}
+
+void PlotTransfertFunction::SetUnits(std::string units){
+  m_units = units;
 }

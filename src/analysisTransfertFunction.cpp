@@ -29,7 +29,7 @@ using namespace tinyxml2;
 int main() {
 
   XMLDocument configFileXML;
-  XMLError errorResult = configFileXML.LoadFile("config.xml");
+  XMLError errorResult = configFileXML.LoadFile("/Users/ben/PostDoc/analysisTransfertFunction/config.xml");
   if (errorResult != XML_SUCCESS){
     std::cerr << "ERROR! Could not find XML file." << std::endl;
     return 1;
@@ -43,7 +43,7 @@ int main() {
 
   const std::string DELIMITER = configFileXML.FirstChildElement("FILE")->FirstChildElement("DELIMITER")->GetText();
   if (DELIMITER == nullptr){
-      std::cerr << "Input file field empty..." << std::endl;
+      std::cerr << "DELIMITER field empty..." << std::endl;
       return 1;
   }
   std::string delimiterChar;
@@ -84,6 +84,19 @@ int main() {
     std::cerr << "RANGE field is empty..." << std::endl;
     return 1;
   }
+  
+  const std::string CONVERSION_FACTOR = configFileXML.FirstChildElement("ANALYSIS")->FirstChildElement("CVF")->GetText();
+  if (CONVERSION_FACTOR == nullptr){
+    std::cerr << "CONVERSION_FACTOR field is empty..." << std::endl;
+    return 1;
+  }
+  
+  const std::string UNITS = configFileXML.FirstChildElement("ANALYSIS")->FirstChildElement("UNITS")->GetText();
+  if (UNITS == nullptr){
+    std::cerr << "CONVERSION_FACTOR field is empty..." << std::endl;
+    return 1;
+  }
+  
   const int THRESHOLD_POSITION = 0;
   
   std::fstream myfile(INPUT_FILE);
@@ -97,6 +110,8 @@ int main() {
   std::vector<double> temporalNoise, offset;
   
   PlotTransfertFunction transfertFunction;
+  transfertFunction.SetConversionFactor(stod(CONVERSION_FACTOR));
+  transfertFunction.SetUnits(UNITS);
   transfertFunction.SetNumberOfEvents(stoi(NUMBER_EVENTS));
   (FIT_START == "none" || FIT_END == "none")? transfertFunction.SetFitRange(threshold.front(), threshold.back()) : transfertFunction.SetFitRange(stoi(FIT_START), stoi(FIT_END));
   (RANGE == "none")? transfertFunction.PlotTransfert(asciiFileToRead.GetNumberOfPixels(), outputImageVectorised) : transfertFunction.PlotTransfert(stoi(RANGE), outputImageVectorised);
@@ -112,8 +127,11 @@ int main() {
   auto offsetMin = std::min_element(std::begin(offset), std::end(offset));
   auto offsetBin = std::ceil((*offsetMax + 1) - (*offsetMin - 1)) * 50;
   
-  transfertFunction.PlotHistogram("Noise distribution [uADC]", "Temporal Noise", temporalNoiseBin, std::ceil(*temporalNoiseMin) - 1 , std::ceil(*temporalNoiseMax) + 1, temporalNoise);
-  transfertFunction.PlotHistogram("Threshold distribution [uADC]", "Fixed pattern noise", offsetBin, std::ceil(*offsetMin) - 1 , std::ceil(*offsetMax) + 1, offset);
+  std::string temporalNoiseTitle = "Noise distribution [" + UNITS + "]";
+  std::string fixedPatternNoiseTitle = "Threshold distribution [" + UNITS + "]";
+  
+  transfertFunction.PlotHistogram(temporalNoiseTitle.c_str(), "Temporal Noise", temporalNoiseBin, std::ceil(*temporalNoiseMin) - 1 , std::ceil(*temporalNoiseMax) + 1, temporalNoise);
+  transfertFunction.PlotHistogram(fixedPatternNoiseTitle.c_str(), "Fixed pattern noise", offsetBin, std::ceil(*offsetMin) - 1 , std::ceil(*offsetMax) + 1, offset);
   
   outputRootFile->Close();
   

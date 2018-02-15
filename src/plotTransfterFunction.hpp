@@ -28,6 +28,9 @@ public:
   void SetNumberOfEvents(int numberOfEvents);
   TF1* SetFitErfc(double threshold_min, double threshold_max);
   void SetFitRange(double fitStart, double fitEnd);
+  void SetConversionFactor(double conversionFactor);
+  void SetUnits(std::string units);
+
   
 private:
   std::vector<double> m_temporalNoise;
@@ -35,7 +38,9 @@ private:
   int m_numberOfEvents;
   double m_fitStart;
   double m_fitEnd;
-  
+  double m_conversionFactor;
+  std::string m_units;
+
 };
 
 #endif /* plotTransfterFunction_hpp */
