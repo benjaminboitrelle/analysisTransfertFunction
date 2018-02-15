@@ -26,10 +26,23 @@
 
 using namespace tinyxml2;
 
-int main() {
+int main (int argc, char **argv){
+  
+  std::string xmlPath;
+  if (argc < 3 || argc > 4){
+    std::cerr << "Usage: " << argv[0] << " <option(s)> SOURCES "
+    << "Options:\n"
+    << "\t -h,--help\t\tShow this help message\n"
+    << "\t -cfg,--config CONFIGURATION\tSpecify path and name of XML configuration file to use"
+    << std::endl;
+    return 1;
+  }
+  if (strcmp(argv[1], "-cfg") == 0 || strcmp(argv[1], "--config") == 0){
+    xmlPath = argv[2];
+  }
 
   XMLDocument configFileXML;
-  XMLError errorResult = configFileXML.LoadFile("/Users/ben/PostDoc/analysisTransfertFunction/config.xml");
+  XMLError errorResult = configFileXML.LoadFile(xmlPath.c_str());
   if (errorResult != XML_SUCCESS){
     std::cerr << "ERROR! Could not find XML file." << std::endl;
     return 1;
