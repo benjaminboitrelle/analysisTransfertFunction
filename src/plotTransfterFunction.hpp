@@ -5,8 +5,8 @@
 //  Created by Benjamin BOITRELLE on 09/11/2017.
 //
 
-#ifndef plotTransfterFunction_hpp
-#define plotTransfterFunction_hpp
+#ifndef SRC_PLOTTRANSFTERFUNCTION_HPP_
+#define SRC_PLOTTRANSFTERFUNCTION_HPP_
 
 #include <stdio.h>
 #include <string>
@@ -16,13 +16,14 @@
 #include "TGraph.h"
 
 class PlotTransferFunction{
-public:
+ public:
   PlotTransferFunction();
   ~PlotTransferFunction();
-  
-  TGraph* PrepareTransferFunctionFitted(int numberOfEntries, double &variable1, double &variable2, TF1* fitToUse, int markerColor );
-  void PlotHistogram(std::string title, std::string histoTitle, int bin, int rangeMin, int rangeMax, std::vector<double> parameterToPlot );
+
+  TGraph* PrepareTransferFunctionFitted(int numberOfEntries, double& variable1, double& variable2, TF1* fitToUse, int markerColor);
+  void PlotHistogram(std::string title, std::string histoTitle, int bin, int rangeMin, int rangeMax, std::vector<double> parameterToPlot);
   void PlotTransfer(int pixelRange, std::vector<std::vector<double>> inputVectorToAnalyse);
+  void PlotBadPixelsMask(std::string title, std::string histoTitle, int binColumn, int columnMin, int columnMax, int binRow, int rowMin, int rowMax, std::vector<std::vector<double>> input, int threshold);
   std::vector<double> GetTemporalNoise();
   std::vector<double> GetOffset();
   void SetNumberOfEvents(int numberOfEvents);
@@ -30,9 +31,11 @@ public:
   void SetFitRange(double fitStart, double fitEnd);
   void SetConversionFactor(double conversionFactor);
   void SetUnits(std::string units);
+  void SetNumberOfRows(int row);
+  void SetNumberOfColumns(int column);
+  void SetOutputDirectory(std::string outputDirectory);
 
-  
-private:
+ private:
   std::vector<double> m_temporalNoise;
   std::vector<double> m_offset;
   int m_numberOfEvents;
@@ -40,7 +43,9 @@ private:
   double m_fitEnd;
   double m_conversionFactor;
   std::string m_units;
-
+  int m_column;
+  int m_row;
+  std::string m_outputDirectory;
 };
 
-#endif /* plotTransfterFunction_hpp */
+#endif  // SRC_PLOTTRANSFTERFUNCTION_HPP_

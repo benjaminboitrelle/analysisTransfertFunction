@@ -5,10 +5,9 @@
 //  Created by Benjamin BOITRELLE on 09/11/2017.
 //
 
-#ifndef processAsciiFile_hpp
-#define processAsciiFile_hpp
+#ifndef SRC_PROCESSASCIIFILE_HPP_
+#define SRC_PROCESSASCIIFILE_HPP_
 
-#include <stdio.h>
 #include <stdio.h>
 #include <vector>
 #include <string>
@@ -19,21 +18,20 @@
 #include <fstream>
 
 class ProcessAsciiFile{
-  
-public:
+ public:
   ProcessAsciiFile();
   ~ProcessAsciiFile();
   std::vector<double> ConvertStringToDouble(std::vector<std::string>& inputString, std::vector<double>& output);
-  void SplitString(const std::string& inputString, std::string delimiterChar, std::vector<std::string> &outputVector);
+  void SplitString(const std::string& inputString, std::string delimiterChar, std::vector<std::string>& outputVector);
   void ReadAsciiFile(std::fstream& myFile, std::vector<std::vector<double>> &outputImageVectorised);
   int GetNumberOfThresholds();
   int GetNumberOfPixels();
   static std::vector<double> GetPixelResponse(std::vector<std::vector<double>> inputVector, int pixelPosition);
   void SetDelimiterChar(std::string delimiterChar);
-  
-private:
+
+ private:
   double m_threshold;
   double m_numberOfPixels;
   std::string m_delimiterChar;
 };
-#endif /* processAsciiFile_hpp */
+#endif  // SRC_PROCESSASCIIFILE_HPP_
