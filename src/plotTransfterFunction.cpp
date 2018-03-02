@@ -107,7 +107,7 @@ void PlotTransferFunction::PlotBadPixelsMask(std::string title, std::string hist
   std::string xTitle = "Columns";
   std::string yTitle = "Rows";
   std::string zTitle = "Normalised response";
-  std::string savePlot = m_outputDirectory + "/badPixelsMask.png";
+  std::string savePlot = m_outputDirectory + "/badPixelsMask_threshold_" + std::to_string(threshold) + ".png";
   histoPixelsMask->GetXaxis()->SetTitle(xTitle.c_str());
   histoPixelsMask->GetYaxis()->SetTitle(yTitle.c_str());
   histoPixelsMask->GetZaxis()->SetTitle(zTitle.c_str());

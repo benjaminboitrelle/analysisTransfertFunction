@@ -29,7 +29,7 @@
   <!-- Put the units needed linked to the CVF: e-, keV, mV, uADC -->
   <UNITS>keV</UNITS>
   <!-- For bad pixels mask, select a threshold -->
-  <THRESHOLD>5</THRESHOLD>
+  <THRESHOLD>42</THRESHOLD>
 </ANALYSIS>
 
 <SENSOR>
