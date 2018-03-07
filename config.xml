@@ -2,34 +2,34 @@
 
 <FILE>
   <!-- Specify input path and name of file to analyse -->
-  <INPUT>/Users/ben/PostDoc/analysisTransfertFunction/input/scans_testlab1.txt</INPUT>
+  <INPUT>/home/ben/analysisTransfertFunction/input/discrims_0_8_31_63_res.txt</INPUT>
   <!-- Specify output path and name of ROOT file to write -->
-  <OUTPUT>/Users/ben/PostDoc/analysisTransfertFunction/output/sCurve_discrimsCVF.root</OUTPUT>
+  <OUTPUT>/home/ben/analysisTransfertFunction/output/sCurve_discrimsCVF.root</OUTPUT>
   <!-- Specify output directory path for storing png pictures 
         /!\ Do not forget "/" at the end of the path -->
-  <OUTPUT_DIR>/Users/ben/PostDoc/analysisTransfertFunction/output/</OUTPUT_DIR>
+  <OUTPUT_DIR>/home/ben/analysisTransfertFunction/output/</OUTPUT_DIR>
   <!-- 3 types of delimiter are considered: 
         - 'tab' for a tabulation (\t)
         - 'whitespace' for a white space char
         - ';' for a CSV file -->
-  <DELIMITER>whitespace</DELIMITER>
+  <DELIMITER>;</DELIMITER>
 </FILE>
 
 <ANALYSIS>
   <!-- Specify number of events during the acquisition for normalisation -->
-  <NUMBER_EVENTS>1000</NUMBER_EVENTS>
+  <NUMBER_EVENTS>1</NUMBER_EVENTS>
   <!-- Begin of the FIT. IF "none", it starts from the first threshold value -->
-  <FIT_START>10</FIT_START>
+  <FIT_START>none</FIT_START>
   <!-- End of the FIT. IF "none", it ends at the last threshold value -->
-  <FIT_END>100</FIT_END>
+  <FIT_END>none</FIT_END>
   <!-- Number of pixels to study. If "none" all the pixels are analysed -->
-  <RANGE>1000</RANGE>
+  <RANGE>none</RANGE>
   <!-- If CVF == 1 => "Noise distribution is in uADC; else for other values do not forget to modify units parameter below -->
   <CVF>1.</CVF>
   <!-- Put the units needed linked to the CVF: e-, keV, mV, uADC -->
   <UNITS>keV</UNITS>
   <!-- For bad pixels mask, select a threshold -->
-  <THRESHOLD>42</THRESHOLD>
+  <THRESHOLD>5</THRESHOLD>
 </ANALYSIS>
 
 <SENSOR>

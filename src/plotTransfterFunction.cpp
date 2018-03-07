@@ -99,9 +99,9 @@ void PlotTransferFunction::PlotBadPixelsMask(std::string title, std::string hist
   std::unique_ptr<TCanvas> canvas (new TCanvas("canvas", "canvas", 1200, 1000));
   TH2F *histoPixelsMask = new TH2F(title.c_str(), histoTitle.c_str(), binColumn, columnMin, columnMax, binRow, rowMin, rowMax);
   int column(columnMin), row(rowMin);
-  for (auto iteratorPixel = 1; iteratorPixel < input.at(threshold).size(); iteratorPixel++){
+  for (unsigned int iteratorPixel = 1; iteratorPixel < input.at(threshold).size(); iteratorPixel++){
     histoPixelsMask->Fill(column, row, input[threshold][iteratorPixel]/m_numberOfEvents);
-    (iteratorPixel % m_column != columnMin)? column++ : (column = columnMin, row++);
+    (iteratorPixel % m_column != (unsigned int)columnMin)? column++ : (column = columnMin, row++);
     if (row == m_row) row = rowMin;
   }
   std::string xTitle = "Columns";

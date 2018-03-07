@@ -9,8 +9,9 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.8 FATAL_ERROR )
 PROJECT(analysisTransfertFunction CXX)
 
 # Setup the build environment
-LIST ( APPEND CMAKE_CXX_FLAGS "-fPIC -O2 -std=c++14 -Wall -Werror -pedantic -g" )
+LIST ( APPEND CMAKE_CXX_FLAGS "-fPIC -O2 -std=c++17 -Wall -Werror -pedantic -g" )
 LIST ( APPEND CMAKE_LD_FLAGS "-fPIC -O2" )
+set (CMAKE_CXX_STANDARD 11)
 
 # Additional packages to be searched for by cmake
 LIST( APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake )
